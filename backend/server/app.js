@@ -30,7 +30,7 @@ app.use('/api/v1/admin', require('./routes/adminRoutes'));
 // Serve frontend in production
 if (process.env.NODE_ENV === 'production') {
   // Set static folder
-  const frontendPath = path.join(__dirname, '../../frontend/dist');
+  const frontendPath = path.resolve(__dirname, '../../frontend/dist');
   app.use(express.static(frontendPath));
 
   app.get('*', (req, res) => {
