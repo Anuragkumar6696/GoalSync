@@ -32,18 +32,29 @@ export const AuthProvider = ({ children }) => {
   }, []); // Only run once on mount
 
   const login = async (email, password) => {
-    const res = await api.post('/auth/login', { email, password });
-    const { token, user: userData } = res.data;
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
-    setUser(userData);
-    return userData;
+    try {
+      const res = await api.post('/auth/login', { email, password });
+      const { token, user: userData } = res.data;
+      
+      // Update state first
+      setUser(userData);
+      
+      // Then storage
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(userData));
+      
+      return userData;
+    } catch (err) {
+      throw err;
+    }
   };
 
   const logout = () => {
+    setUser(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    setUser(null);
+    // Force a complete state reset by using window.location for logout
+    window.location.href = '/login';
   };
 
   return (
